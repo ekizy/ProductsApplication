@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.ekiz.products.R
 import com.ekiz.products.base.BaseFragment
 import com.ekiz.products.itemdecoration.ProductsItemDecoration
@@ -32,8 +33,13 @@ class ProductsFragment : BaseFragment<ProductsViewModel>() {
         val view = super.onCreateView(inflater, container, savedInstanceState)
         observeSuccess()
         observeSuccess()
-        listenPullToRefresh()
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        listenPullToRefresh()
+        addItemDecoration()
     }
 
     override fun layoutId(): Int = R.layout.fragment_products
@@ -41,15 +47,12 @@ class ProductsFragment : BaseFragment<ProductsViewModel>() {
     private fun observeSuccess() {
         viewModel.result.observe(viewLifecycleOwner, Observer {
             it?.let {
+                if (products_holder_layout.isRefreshing) {
+                    products_holder_layout.isRefreshing = false
+                }
                 if (productsAdapter == null) {
-                    val topPadding = context?.resources?.getDimensionPixelSize(R.dimen.dimen_16) ?: 0
-                    val leftRightPadding = context?.resources?.getDimensionPixelSize(R.dimen.dimen_8) ?: 0
-                    val bottomPadding = context?.resources?.getDimensionPixelSize(R.dimen.dimen_16) ?: 0
-                    val itemVerticalOffset = context?.resources?.getDimensionPixelSize(R.dimen.dimen_8) ?: 0
-
                     recycler_view_products?.adapter = ProductsAdapter(it)
                     recycler_view_products.layoutManager = LinearLayoutManager(context)
-                    recycler_view_products.addItemDecoration(ProductsItemDecoration(topPadding,leftRightPadding,bottomPadding,itemVerticalOffset))
                 } else {
                     productsAdapter?.productContainerModel = it
                 }
@@ -62,6 +65,24 @@ class ProductsFragment : BaseFragment<ProductsViewModel>() {
     }
 
     private fun listenPullToRefresh() {
+        products_holder_layout.setOnRefreshListener {
+            viewModel.getProducts()
+        }
+    }
+
+    private fun addItemDecoration() {
+        val topPadding = context?.resources?.getDimensionPixelSize(R.dimen.dimen_16) ?: 0
+        val leftRightPadding = context?.resources?.getDimensionPixelSize(R.dimen.dimen_8) ?: 0
+        val bottomPadding = context?.resources?.getDimensionPixelSize(R.dimen.dimen_16) ?: 0
+        val itemVerticalOffset = context?.resources?.getDimensionPixelSize(R.dimen.dimen_8) ?: 0
+        recycler_view_products.addItemDecoration(
+            ProductsItemDecoration(
+                topPadding,
+                leftRightPadding,
+                bottomPadding,
+                itemVerticalOffset
+            )
+        )
     }
 
 }

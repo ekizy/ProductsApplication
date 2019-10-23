@@ -23,7 +23,7 @@ class ProductsViewModel @Inject constructor(
         getProducts()
     }
 
-    private fun getProducts() = bgScope.launch {
+    fun getProducts() = bgScope.launch {
         isProgressVisible.postValue(true)
         try {
             val products = repository.getProducts()
