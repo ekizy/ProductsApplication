@@ -7,4 +7,8 @@
         android:id="@+id/productsFragment"
         android:name="com.ekiz.products.scenes.products.ProductsFragment"
         android:label="ProductsFragment" />
+    <fragment
+        android:id="@+id/productDetailFragment"
+        android:name="com.ekiz.products.scenes.productDetail.ProductDetailFragment"
+        android:label="ProductDetailFragment" />
 </navigation>

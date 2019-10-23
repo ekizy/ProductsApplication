@@ -19,23 +19,31 @@ class ProductsViewModel @Inject constructor(
 
     var result: MutableLiveData<ProductsContainerUIModel> = MutableLiveData()
     val isProgressVisible: MutableLiveData<Boolean> = MutableLiveData()
+    var initialLoad = true
     init {
         getProducts()
     }
 
     fun getProducts() = bgScope.launch {
-        isProgressVisible.postValue(true)
+
+        if (initialLoad) {
+            sendProgressSignal(true)
+        }
+
         try {
             val products = repository.getProducts()
             withContext(Dispatchers.Main) {
-                isProgressVisible.postValue(false)
                 handleSuccess(products)
             }
         } catch (failure: Failure) {
             withContext(Dispatchers.Main) {
-                isProgressVisible.postValue(false)
                 handleFailure(failure)
             }
+        }
+
+        if (initialLoad) {
+            isProgressVisible.postValue(false)
+            initialLoad.not()
         }
     }
 
@@ -45,6 +53,10 @@ class ProductsViewModel @Inject constructor(
 
     private fun handleFailure(failure: Failure) {
         print(failure.message)
+    }
+
+    fun sendProgressSignal(shouldShow: Boolean) {
+        isProgressVisible.postValue(true)
     }
 
 }

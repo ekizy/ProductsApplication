@@ -32,7 +32,8 @@ class ProductsFragment : BaseFragment<ProductsViewModel>() {
     ): View? {
         val view = super.onCreateView(inflater, container, savedInstanceState)
         observeSuccess()
-        observeSuccess()
+        observeError()
+        observeProgress()
         return view
     }
 
@@ -85,4 +86,12 @@ class ProductsFragment : BaseFragment<ProductsViewModel>() {
         )
     }
 
+    private fun observeProgress() {
+        viewModel.isProgressVisible.observe(viewLifecycleOwner, Observer {
+            it.let {
+                recycler_view_products.visibility = if (it) View.GONE else View.VISIBLE
+                progress_bar_products_loading.visibility = if (it) View.VISIBLE else View.GONE
+            }
+        })
+    }
 }

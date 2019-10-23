@@ -1,6 +1,5 @@
 package com.ekiz.products.scenes.products
 
-import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -87,7 +86,7 @@ class ProductsAdapter(var productContainerModel: ProductsContainerUIModel) :
 
             itemView.text_view_available_item_product_name.text = product?.name
             itemView.text_view_avaiable_item_product_description.text = product?.description
-            itemView.image_view_available_item_product_price_value.text =
+            itemView.text_view_available_item_product_price_value.text =
                 product?.price?.value.toString()
             itemView.text_view_available_item_release_date.text = product?.getDateString()
             itemView.rating_bar_available_item_rating.rating = product?.rating?.toFloat() ?: 0.0f
